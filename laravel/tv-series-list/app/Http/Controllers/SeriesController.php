@@ -11,6 +11,9 @@ class SeriesController extends Controller
     public function index(Request $request)
     {
         $series = Serie::all();
+        $msgSuccess = $request->session()->get('msg.success');
+        // $request->session()->forget('msg.success');
+        
         // $series = Serie::query()->orderBy('name')->get();
         // $series = DB::select('SELECT name FROM series');
         
@@ -18,7 +21,7 @@ class SeriesController extends Controller
         //     'series' => $series
         // ]);
         // return view('series.index', compact('series'));
-        return view('series.index')->with('series', $series);
+        return view('series.index')->with('series', $series)->with('msgSuccess', $msgSuccess);
     }
 
     public function create()
@@ -35,9 +38,19 @@ class SeriesController extends Controller
 
         // Mass Assigment:
         Serie::create($request->all());
+        $request->session()->flash('msg.success','Added successfully');
         // search about ->except, ->only ....
-        
+
         // DB::insert('INSERT INTO series (name) VALUES (?)', [$nameSeries]);
-        return redirect('/series');
+        return to_route('series.index');
+    }
+    public function destroy(Request $request)
+    {
+        // dd($request->route());
+        Serie::destroy($request->series);
+        // $request->session()->put('msg.success', 'TV Serie successfully deleted!');
+        $request->session()->flash('msg.success', 'TV Serie successfully deleted!');
+
+        return to_route('series.index');
     }
 }
