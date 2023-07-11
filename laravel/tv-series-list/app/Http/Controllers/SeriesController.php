@@ -28,10 +28,15 @@ class SeriesController extends Controller
 
     public function store(Request $request)
     {
-        $nameSeries = $request->input('name');
-        $newSerie = new Serie();
-        $newSerie->name = $nameSeries;
-        $newSerie->save();
+        // $nameSeries = $request->name;
+        // $newSerie = new Serie();
+        // $newSerie->name = $nameSeries;
+        // $newSerie->save();
+
+        // Mass Assigment:
+        Serie::create($request->all());
+        // search about ->except, ->only ....
+        
         // DB::insert('INSERT INTO series (name) VALUES (?)', [$nameSeries]);
         return redirect('/series');
     }
