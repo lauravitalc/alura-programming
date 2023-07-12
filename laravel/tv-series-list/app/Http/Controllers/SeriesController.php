@@ -37,20 +37,35 @@ class SeriesController extends Controller
         // $newSerie->save();
 
         // Mass Assigment:
-        Serie::create($request->all());
-        $request->session()->flash('msg.success','Added successfully');
+        $serie = Serie::create($request->all());
+        // $request->session()->flash("msg.success","'{$serie->name}' added successfully");
         // search about ->except, ->only ....
 
         // DB::insert('INSERT INTO series (name) VALUES (?)', [$nameSeries]);
-        return to_route('series.index');
+        return to_route('series.index')->with("msg.success","'{$serie->name}' added successfully");
     }
-    public function destroy(Request $request)
+    public function destroy(Serie $series)
     {
         // dd($request->route());
-        Serie::destroy($request->series);
-        // $request->session()->put('msg.success', 'TV Serie successfully deleted!');
-        $request->session()->flash('msg.success', 'TV Serie successfully deleted!');
+        // Serie::destroy($request->series);
+        $series->delete();
 
-        return to_route('series.index');
+        // $request->session()->put('msg.success', 'TV Serie successfully deleted!');
+        // $request->session()->flash('msg.success', "'{$series->name}' successfully deleted!");
+
+        return to_route('series.index')->with('msg.success', "'{$series->name}' successfully deleted!");
+    }
+    public function edit(Serie $series)
+    {
+        return view('series.edit')->with('serie', $series);
+    }
+
+    public function update(Serie $series, Request $request)
+    {
+        // $series->name = $request->name;
+        $series->fill($request->all()); // use fillable 
+        $series->save();
+        
+        return to_route('series.index')->with('msg.success', "'{$series->name}' successfully updated!");
     }
 }
