@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SeriesFormRequest;
+use App\Models\Episode;
+use App\Models\Season;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Serie;
@@ -40,6 +42,25 @@ class SeriesController extends Controller
 
         // Mass Assigment:
         $serie = Serie::create($request->all());
+        $seasons = [];
+        for ($i=1; $i <= $request->seasonsQty; $i++){
+            $seasons[] = [
+                'series_id' => $serie->id,
+                'number' => $i,
+            ];
+        }
+        Season::insert($seasons);
+            
+        $episodes = [];
+        foreach($serie->seasons as $season){
+                for($j=1; $j <= $request->episodesSeason; $j++){
+                $episodes[] = [
+                    'season_id' => $season->id,
+                    'number' => $i,
+                ];
+            }
+        }
+        Episode::insert($episodes);
         // $request->session()->flash("msg.success","'{$serie->name}' added successfully");
         // search about ->except, ->only ....
 
